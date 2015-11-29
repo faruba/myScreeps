@@ -1,3 +1,5 @@
+require('../define')
+
 {_} = require('underscore')
 class HightOrderFuncPair
 	constructor : (pair ={}) ->

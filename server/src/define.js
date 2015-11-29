@@ -78,3 +78,16 @@ COLOR_WHITE =     "white"
 //Room = Modes
 MODE_SIMULATION =     "simulation"
 MODE_WORLD =  "world"
+
+// pos status
+POINT_EMPTY = 0
+POINT_GROND = 1
+POINT_BUILD = 2
+
+
+
+
+
+var util = require('util');
+showMeTheStack = function () {try {a = b;} catch (err) {console.log(err.stack);}};
+print = function(log){ console.log(util.inspect(log,{depth:11}));}

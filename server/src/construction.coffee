@@ -13,5 +13,5 @@ class ConstructionSite
   remove: ()->
     @room.remove(@)
 
-ConstructionSite._checkPosValidate(pos, sType) ->
+ConstructionSite._checkPosValidate = (pos, sType) ->
   ConstructionSiteCfg[sType]?.validatePosType?.indexOf(sType) isnt -1

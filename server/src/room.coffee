@@ -1,9 +1,7 @@
-{Grid, Node} = require( 'pathfinding')
+{Grid, Node} = require( './util/pathfindingWarp')
 {ConstructionSite} = require('./construction')
-{Pos} = require('./Utils')
-MyNode extends Node
-
-Node = MyNode
+{Pos} = require('./util/helper')
+#
 # postion info store in the room [x][y]:ref-object
 #
 class Room
@@ -25,7 +23,8 @@ class Room
   _randoomID:() ->
     ""
 
-  _checkPos
+
+  #_checkPos
 
 
 Room.serializePath = (pathArray) ->
