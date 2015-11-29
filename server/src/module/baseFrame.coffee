@@ -1,9 +1,12 @@
 {_} = require('undersocre')
+Event = require('events')
+Util = require('util')
 
 class BaseFrame extends Frame
   constructor:() ->
     @_tickStore
     @_scheduledAction
+    Event.call(@)
 
   _tick:() ->
     @_tickStore -= 1
@@ -20,5 +23,6 @@ class BaseFrame extends Frame
   
   _onDamage:(damageValue) ->
     activeModule = _.find(@slots, (module) -> module._isAlive())
-    return 
+    return
     
+Util.inherits(BaseFrame, Event)
