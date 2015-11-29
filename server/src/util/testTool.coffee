@@ -21,9 +21,9 @@ test = (assertFun, funNeedTest, rule, env) ->
 		mode = assertFun
 
 	switch mode
-		when 'assert' then assertFun(funNeedTest(env, rule.input), rule.expect)
-		when 'throw' then funNeedTest.bind(null, env, rule.input).should.throw(rule.expect)
-		when 'notThrow' then funNeedTest.bind(null, env, rule.input).should.not.throw(rule.expect)
+		when 'assert' then assertFun(funNeedTest(env, rule.input), rule.expect, rule.lable)
+		when 'throw' then funNeedTest.bind(null, env, rule.input).should.throw(rule.expect, rule.lable)
+		when 'notThrow' then funNeedTest.bind(null, env, rule.input).should.not.throw(rule.expect, rule.lable)
 
 
 runTestSuit = (testSuitList) ->
