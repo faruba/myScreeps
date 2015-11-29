@@ -15,8 +15,9 @@ var sass = require('gulp-sass');
 //var footer = require('gulp-footer');
 
 var paths = {
-	coffees: ['src/**/*.coffee'],
+  coffees: ['src/**/*.coffee'],
   tests: { src:['test/*.coffee'], des:'build/test/'},
+  js:['src/**/*.js']
 };
 
 gulp.task('compileTest', function () {
@@ -62,7 +63,7 @@ gulp.task('js', function () {
   return gulp.src(paths.js)
     //.pipe(cache('js'))
     //.pipe(uglify())
-    .pipe(gulp.dest('js'))
+    .pipe(gulp.dest('build/src'))
     .on('error', console.log);
 });
 
@@ -87,10 +88,11 @@ gulp.task('compile', function () {
     .on('error', console.log);
 });
 
-gulp.task('test',['compile','compileTest','mocha']);
+gulp.task('c',['compile','js']);
+gulp.task('t',['c','compileTest','mocha']);
 gulp.task('watch', function () {
   //gulp.watch(paths.coffees, ['lint', 'compile']);
-  gulp.watch(paths.coffees, ['compile']);
+  gulp.watch(paths.coffees, ['c']);
   gulp.watch(paths.tests.src, ['compileTest','mocha']);
 });
 
