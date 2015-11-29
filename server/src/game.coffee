@@ -22,4 +22,7 @@ class Game
       when "st" then h = @structures
       when "c" then h = @creeps
     return h[id]
+
+  _tick:(dt) ->
+    @map._tick(dt)
     

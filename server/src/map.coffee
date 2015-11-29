@@ -21,9 +21,10 @@ exports.testMapCfg = {
 }
 class Map
   constructor:(mapCfg)->
-    @rooms =  {}
-    @spawns = {}
-    @creeps = {}
+    @_rooms =  {}
+    @_spawns = {}
+    @_creeps = {}
+    @_structures = {}
 
     @_roomPath = new graff.Graph(_.defaults(mapCfg, {directed:false}))
     for roomCfg in mapCfg.rooms
@@ -37,4 +38,12 @@ class Map
 
     isRoomProtected:(roomName)->
       @rooms[roomName]?.isProtected()
+
+
+    _tick:(dt) ->
+      [@_rooms, @_spawns,@_structures,@_creeps].forEach((objs) ->
+        _.each(objs,(elm, idx,list) ->
+          elm._tick(dt)
+          return list
+        ,null))
 

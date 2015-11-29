@@ -1,7 +1,7 @@
 ConstructionSiteCfg =[
   Rode:{
     progressTotal:100
-    validatePosType:[1
+    validatePosType:[1]
   }
 ]
 class ConstructionSite
