@@ -1,4 +1,4 @@
-
+{_} = require('underscore')
 class HightOrderFuncPair
 	constructor : (pair ={}) ->
 		@pair =pair
@@ -36,34 +36,53 @@ boundaries = (min, max, value) ->
 	return value
 
 
-class P
-	constructor: (x = 0, y =0) ->
-		@x = x
-		@y = y
+class Pos
+	constructor: (@x = 0, @y =0) ->
 
 	add: (point) ->
 		@x += point.x
 		@y += point.y
 
 	offset: (point) ->
-		new P(@x + point.x, @y + point.y)
+		new Pos(@x + point.x, @y + point.y)
 
 	scale: (times) ->
-		new P(@x * times, @y * times)
+		new Pos(@x * times, @y * times)
 	isValidatePos: () ->
 		return @x >=0 and @y >=0
 	
+exports.Pos = Pos
 
 MoveMitrix = [
-	new P(0,1),
-	new P(1,1),
-	new P(1,0),
-	new P(1,-1),
-	new P(0,-1),
-	new P(-1,-1),
-	new P(-1,0),
-	new P(-1,1),
+	new Pos(0,1),
+	new Pos(1,1),
+	new Pos(1,0),
+	new Pos(1,-1),
+	new Pos(0,-1),
+	new Pos(-1,-1),
+	new Pos(-1,0),
+	new Pos(-1,1),
 ]
+exports.MoveMitrix = MoveMitrix
 
+class Data
+  constructor:(initData = {}) ->
+    @data = _.extend({}, initData)
+    @hooks ={s:{},g:{}}
+  set:(key, value) ->
+    old = @data[key]
+    @hooks.s[key]?.forEach((func) -> func(key,old, value))
+    console.log('call ', key, @hooks.s[key])
+    @data[key] =value
+  get:(key, defaults) ->
+    value =  if @data[key]? then @data[key] else defaults
+    @hooks.g[key]?.forEach((func) -> func(key,value))
+    return value
+  setHook:(key,isSet,func) ->
+    hook = if isSet then @hooks.s else @hooks.g
+    hook[key] ?= []
 
+    return if hook[key].indexOf(func) isnt -1
+    hook[key].push(func)
 
+exports.Data = Data

@@ -1,11 +1,11 @@
 exports.Config = {
   GCL:{
-    hooks:[]
+    hooks:[],
     levels:[
       {
-        upgradeCost: 20
-        limit:[]
+        upgradeCost: 20,
+        limit:[],
       }
-    ]
-  }
+    ],
+  },
 }
