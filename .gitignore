@@ -4,4 +4,5 @@ build
 session.vim
 **/.*.swp
 **/.*~
+**/*.coffee_bak
 
