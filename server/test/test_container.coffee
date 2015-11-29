@@ -59,6 +59,33 @@ testSuitList =[
           {input: {act:'get',value:30}, expect :[0,30,28]},
         ]
       },
+      {
+        it: '2 2 Continer',
+        init : () ->
+          gdata = new Data()
+          c1 = new Container(gdata,{capacity:10, name:'c1', maxHp:10})
+          c2 = new Container(gdata,{capacity:20, name:'c2', maxHp:10})
+          c1._attach(null)
+          c2._attach(null)
+          return c1
+        ,
+        do:(c, {act,value}) ->
+          switch act
+            when 'put' then ret = c._put(value)
+            when 'get' then ret = c._get(value)
+            when 'dt'
+              c._detach()
+              ret = null
+          return [c.carry(),c.carryCapacity(),ret]
+        ,
+        assert : eql
+        tests : [
+          {input: {act:'put',value:25}, expect :[25,30,0]},
+          {input: {act:'dt'}, expect :[20,20,null]},
+          {input: {act:'put',value:8}, expect :[20,20,8]},
+          {input: {act:'get',value:2}, expect :[18,20,2]},
+        ]
+      }
     ]
   },
 
