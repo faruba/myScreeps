@@ -1,15 +1,28 @@
-class Module
-  constructor: () ->
-    @property =  { }
-    @interface =  { }
-    @frame = null
-    @maxLife = 20
-    @life = @maxLife
+class Life
+  constructor:(@data, @cfg) ->
+    @key = @cfg.name+'.hp'
+    @data.set(@key,@cfg.maxHp)
 
-  caculateCost:(count) -> return false
-  attach : (@frame) ->
-  detach : () -> @frame = null
-  getType : () -> return null
+  _onDamage:(damage) ->
+    hp = @data.get(@key) - damage
+    @data.set(@key, hp)
+    if(hp <= 0) then @_onDie()
+
+  _isAlive:() -> @_hp() > 0
+  _hp:() -> @data.get(@key)
+  
+  _onDie:() ->
+
+
+
+class Module extends Life
+  constructor: (cfg,@_store) ->
+    super(@_store,cfg)
+    @frame = null
+
+  _attach : (@frame) ->
+  _detach : () -> @frame = null
+  _getType : () -> return null
 
 exports.Module = Module
 

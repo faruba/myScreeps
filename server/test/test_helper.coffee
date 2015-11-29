@@ -65,7 +65,26 @@ testSuitList =[
           {input: {act:'set',key:'newKey',value:1,def:null}, expect :9},
         ]
       },
-
+      {
+        it: '3 append',
+        init : () -> return new Data(),
+        do:(data, {act,key,value}) ->
+          switch act
+            when 'a'
+              data.append(key,value)
+              return data.get(key)
+            when 's'
+              data.sub(key,value)
+              return data.get(key)
+        ,
+        assert : equal
+        tests : [
+          {input: {act:'a',key:'newKey',value:1}, expect :1},
+          {input: {act:'a',key:'newKey',value:2}, expect :3},
+          {input: {act:'s',key:'newKey',value:4}, expect :-1},
+          {input: {act:'s',key:'n2',value:3}, expect :-3},
+        ]
+      },
 
     ]
   },

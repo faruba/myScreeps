@@ -1,61 +1,42 @@
+{Error} = require('../../util/helper')
+{Module} = require('../module')
 class Container extends Module
-	constructor: (capacity = 10, goods = {}) ->
-		@capacity = capacity
-		@goods = goods
-		super()
+  constructor: (@_store, @cfg) ->
+    super(@cfg,@_store)
+    @key='mp'
+    @cap='mpMax'
 
-	getType : () -> return ModeType.Type_Container
-	putIn: (good) ->
-		capacityLeft = @capacityLeft()
-		ret = {left:good.count }
-		return ret if capacityLeft is 0
-		solt = if @goods[good.type]? then @goods[good.type] else  new Good(good.type)
-		if good.count > capacityLeft
-			ret.left = good.count - capacityLeft
-			solt.count = capacityLeft
-		else
-			ret.left = 0
-			solt.count += good.count
+  _attach:(frame)->
+    super(frame)
+    @_store.set(@key,0) unless @_store.get(@key)?
+    @_store.append(@cap,@cfg.capacity)
 
-		@_set(good.type, solt)
-		return ret
+  _detach:() ->
+    super()
+    @_store.set(@cap, @carryCapacity() - @cfg.capacity)
+    @_store.set(@key,Math.min(@carry(),@carryCapacity()))
 
-	getFrom: (need) ->
-		needType = need.type
-		needType = @getDefaultType() unless needType?
-		return null unless @isHave(needType)
-		ret = new Good(needType)
-		solt = @_get(needType)
-		if solt.count > need.count
-			ret.count = need.count
-			solt.count -= need.count
-		else
-			ret.count = solt.count
-			solt = null
-		@_set(needType, solt)
-		return ret
+  _getType : () -> return ModeType.Type_Container
+  _put: (wantPut) ->
+    return Error(_Err_should_positive) unless wantPut > 0
+    putMax = @_capacityLeft()
+    canPut = Math.min(putMax,wantPut)
+    @_store.append(@key, canPut)
+    return wantPut - canPut
 
-	getDefaultType : () ->
-		for type, good of @goods
-			return type
-		return null
+  _get: (need) ->
+    have = @carry()
+    canGive = Math.min(have,need)
+    @_store.sub(@key,canGive)
+    return canGive
 
-	isHave : (type) -> return type? and @_get(type)?
-	isFull : ()  -> return @capacityLeft() is 0
-	capacityLeft: () ->
-		sum = 0
-		for type, good of @goods
-			sum += good.count
-
-		return @capacity - sum
+  _isFull : ()  -> return @_capacityLeft() is 0
+  _capacityLeft: () ->
+    return @carryCapacity() - @carry()
 
 
-	_get: (type) -> return @goods[type]
-	_set: (type, value) ->
-		if value?
-			@goods[type] = value
-		else
-			delete @goods[type]
+  carry:() -> @_store.get(@key)
+  carryCapacity:()->@_store.get(@cap)
 
 exports.Container = Container
 

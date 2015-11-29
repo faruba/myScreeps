@@ -1,18 +1,3 @@
-class Attackable
-  constructor:(@data, @cfg) ->
-    @key = @cfg.name+'.hp'
-    @data.set(@key,@cfg.maxHp)
-
-  _onDamage:(damage) ->
-    hp = @data.get(@key) - damage
-    @data.set(@key, hp)
-    if(hp <= 0) then @_onDie()
-
-  _isAlive:() -> @data.get(@key) > 0
-  
-  _onDie:() ->
-
-
 
 class Frame
   constructor: () ->
@@ -22,7 +7,7 @@ class Frame
 
   #getPos: -> return @slots[Slot_Base].pos
   getModule: (moduleType) ->
-    return @slots.filter((module) ->return module.getType() is moduleType)
+    return @slots.filter((module) ->return module._getType() is moduleType)
 
 
   remove: (pos) ->
@@ -31,7 +16,7 @@ class Frame
 
   install: (module, pos) ->
     return false if pos < 0 or pos >= CONST_MAX_SLOT_NUM
-    if module? and module.getType() is ModeType.Type_Wheel
+    if module? and module._getType() is ModeType.Type_Wheel
       pos = Slot_Base
 
 
@@ -39,9 +24,9 @@ class Frame
 
     if originMode?
       @unregisteFunction(originMode, pos)
-      originMode.detach()
+      originMode._detach()
     if module?
-      module.attach(@)
+      module._attach(@)
       @registeFunction(module,pos)
 
   registeFunction :(module,pos) ->

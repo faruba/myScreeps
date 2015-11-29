@@ -72,7 +72,6 @@ class Data
   set:(key, value) ->
     old = @data[key]
     @hooks.s[key]?.forEach((func) -> func(key,old, value))
-    console.log('call ', key, @hooks.s[key])
     @data[key] =value
   get:(key, defaults) ->
     value =  if @data[key]? then @data[key] else defaults
@@ -84,5 +83,17 @@ class Data
 
     return if hook[key].indexOf(func) isnt -1
     hook[key].push(func)
+  append:(key,value) ->
+    v= @data[key] ? 0
+    v+=value
+    @set(key, v)
+
+  sub:(key,value) ->
+    v= @data[key] ? 0
+    v-=value
+    @set(key, v)
+
 
 exports.Data = Data
+
+exports.Error = (err) -> {err:err}
