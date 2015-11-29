@@ -21,8 +21,16 @@ var paths = {
 
 gulp.task('compileTest', function () {
     return gulp.src(paths.tests.src)
-		.pipe(changed(paths.tests.des))
+//		.pipe(changed(paths.tests.des))
         //.pipe(cache('compiletest'))
+		//.pipe(sass({
+		//style: 'compressed',
+		//errLogToConsole: false,
+		//onError:function(error){
+		//	notify({
+		//	title:"SASS ERROR",
+		//	message: "line " + error.line + error.file.replace(/^.*[\\\/]/,'') +"\n" + error.message }).write(error); }
+		//}))
         .pipe(coffee())
         .pipe(gulp.dest(paths.tests.des))
         .on('error', console.log);
@@ -61,24 +69,25 @@ gulp.task('js', function () {
 gulp.task('compile', function () {
   return gulp.src(paths.coffees)
 	.pipe(changed('build/src'))
-	.pipe(sass({
-		style: 'compressed',
-		errLogToConsole: false,
-		onError:function(error){
-			notify({
-				title:"SASS ERROR",
-				message: "line " + error.line + error.file.replace(/^.*[\\\/]/,'') +"\n"
-				+ error.message
-			}).write(error);
-		}
-	}))
-    //.pipe(cache('compile'))
+	//.pipe(sass({
+	//	style: 'compressed',
+	//	errLogToConsole: false,
+	//	onError:function(error){
+	//		notify({
+	//			title:"SASS ERROR",
+	//			message: "line " + error.line + error.file.replace(/^.*[\\\/]/,'') +"\n"
+	//			+ error.message
+	//		}).write(error);
+	//	}
+	//}))
     .pipe(coffee())
+    //.pipe(cache('compile'))
     //.pipe(uglify())
     .pipe(gulp.dest('build/src'))
     .on('error', console.log);
 });
 
+gulp.task('test',['compile','compileTest','mocha']);
 gulp.task('watch', function () {
   //gulp.watch(paths.coffees, ['lint', 'compile']);
   gulp.watch(paths.coffees, ['compile']);
