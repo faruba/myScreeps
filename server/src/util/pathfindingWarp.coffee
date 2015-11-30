@@ -6,6 +6,7 @@ class MyNode extends Node
   constructor:(x,y,walkable)->
     super(x,y,walkable)
     @ref=null
+    @bak = true
   bind:(ref)->
     old = @ref
     @ref = ref
@@ -17,9 +18,17 @@ class MyNode extends Node
         configurable : true
        })
     else
-      Object.defineProperty(@, 'walkable', null)
-      @walkable = true
+      Object.defineProperty(@, 'walkable', {
+        writable:true,
+        configurable: true,
+        enumerable:true,
+      })
+      @walkable = @bak
+      console.log('======', @walkable, @bak)
     return old
+
+  _setwlkable:(@walkable) ->
+    @bak=@walkable
 
 Pf.Node = MyNode
 
@@ -42,7 +51,7 @@ class MyGrid extends Grid
         if (matrix[i][j])
           # 0, false, null will be walkable
           # while others will be un-walkable
-          nodes[i][j].walkable = false
+          nodes[i][j]._setwlkable(false)
     return nodes
 
   clone:() ->

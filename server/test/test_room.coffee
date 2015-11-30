@@ -46,6 +46,12 @@ testSuitList =[
           {input: {act:'cw',x:2,y:2}, expect :true},
           {input: {act:'sw',x:2,y:2,value:false}, expect :false},
           {input: {act:'sw',x:2,y:2,value:true}, expect :true},
+          {input: {act:'bw',x:0,y:0,value:null}, expect :null},
+          {input: {act:'cw',x:0,y:0}, expect :false},
+          {input: {act:'bw',x:0,y:0,value:walk}, expect :null},
+          {input: {act:'cw',x:0,y:0}, expect :true},
+          {input: {act:'bw',x:0,y:0,value:null}, expect :walk},
+          {input: {act:'cw',x:0,y:0}, expect :false},
         ]
       },
       
