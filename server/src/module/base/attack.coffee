@@ -14,4 +14,6 @@ class Attack extends Module
     super()
     @_store.sub(@key,1)
 
+  _onAttack:(@target) ->
+    
 

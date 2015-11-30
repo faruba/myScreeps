@@ -99,3 +99,9 @@ class Data
 exports.Data = Data
 
 exports.Error = (err) -> {err:err}
+
+['Flag','Creep','Struct','Spawn'].forEach((name) =>
+  exports['gen'+name+'Id'] = () -> _.uniqueId(name))
+
+exports.ClassWarp = (owner, clazz) ->
+

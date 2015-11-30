@@ -22,9 +22,6 @@ exports.testMapCfg = {
 class Map
   constructor:(mapCfg)->
     @_rooms =  {}
-    @_spawns = {}
-    @_creeps = {}
-    @_structures = {}
 
     @_roomPath = new graff.Graph(_.defaults(mapCfg, {directed:false}))
     for roomCfg in mapCfg.rooms
@@ -41,9 +38,15 @@ class Map
 
 
     _tick:(dt) ->
-      [@_rooms, @_spawns,@_structures,@_creeps].forEach((objs) ->
-        _.each(objs,(elm, idx,list) ->
-          elm._tick(dt)
-          return list
-        ,null))
+      _.each(@_rooms,(elm, idx,list) ->
+        elm._tick(dt)
+        return list
+      ,null)
 
+    _createMap:(name) ->
+      return ERR_NAME_EXISTS if @_rooms[name]?
+      @_rooms[name] = new Room(name)
+
+    _getRoom:(name) -> @_rooms[name]
+
+exports.gMap = new Map()

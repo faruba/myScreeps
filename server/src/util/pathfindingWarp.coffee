@@ -68,6 +68,8 @@ class MyGrid extends Grid
     newGrid.nodes = newNodes
 
     return newGrid
+setWalkableAt:(x,y,walkable) ->
+  @nodes[y][x]._setwlkable(walkable)
 
 
 Pf.Grid = MyGrid
