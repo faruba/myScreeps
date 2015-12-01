@@ -1,6 +1,7 @@
 require('../define')
+{_} = require('lodash')
 
-{_} = require('underscore')
+#{_} = require('underscore')
 class HightOrderFuncPair
 	constructor : (pair ={}) ->
 		@pair =pair
@@ -103,5 +104,24 @@ exports.Error = (err) -> {err:err}
 ['Flag','Creep','Struct','Spawn'].forEach((name) =>
   exports['gen'+name+'Id'] = () -> _.uniqueId(name))
 
-exports.ClassWarp = (owner, clazz) ->
+ClassWarp = (owner, clazz, cfg) ->
+  genFunc = (_owner, func) ->
+    return () ->
+      newArgs = [_owner].concat(arguments)
+      for check in cfg.checkLst
+        ret = check.apply(@,newArgs)
+        if ret isnt OK
+          return ret
+      return func.apply(@,newArgs)
+
+  funcLst = _.filter(Object.keys(clazz::),
+    _.partial(_.startsWith,_,cfg.prefix))
+      
+  for funName in funcLst
+    exportName = _.trimLeft(funName,cfg.prefix)
+    clazz::[exportName] = genFunc(owner,clazz::[funName])
+    #console.log(clazz::[exportName], exportName)
+  return clazz
+exports.ClassWarp = ClassWarp
+
 

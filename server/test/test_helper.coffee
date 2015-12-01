@@ -93,3 +93,16 @@ testSuitList =[
 
 
 runTestSuit(testSuitList )
+#class A
+#  constructor:(@a,@b) ->
+#  __fA:(p,c) -> p+"  "+@a+@b+c
+#
+#B = ClassWarp("C",A,{prefix:'__',checkLst:[
+#  (p) ->
+#    console.log('check;',p)
+#    if p is "C" then OK else -1
+#]})
+#b = new B(1,3)
+#console.log(b.fA(9))
+#console.log(b)
+

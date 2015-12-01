@@ -27,22 +27,22 @@ class Room
   _randoomID:() ->
     ""
 
-  createConstructionSite:(x, y, structureType)->
-  createConstructionSite:(pos, structureType)->
-    pos.createConstructionSite(structureType)
-  createFlag:(x, y, name=genFlagId(), color=COLOR_WHITE)->
-  createFlag:(pos, name=genFlagId(), color=COLOR_WHITE)->
-    pos.createFlag(name,color)
-  find:(type, [opts])->
-  findExitTo:(room)->
-  findPath:(fromPos, toPos, [opts])->
-  getPositionAt:(x, y)->
-  lookAt:(x, y)->
-  lookAt:(target)->
-  lookAtArea:(top, left, bottom, right)->
-  lookForAt:(type, x, y)->
-  lookForAt:(type, target)->
-  lookForAtArea:(type, top, left, bottom, right)->
+  __createConstructionSite:(palyer,x, y, structureType)->
+  __createConstructionSite:(palyer,pos, structureType)->
+    pos.createConstructionSite(palyer,structureType)
+  __createFlag:(palyer,x, y, name=genFlagId(), color=COLOR_WHITE)->
+  __createFlag:(palyer,pos, name=genFlagId(), color=COLOR_WHITE)->
+    pos.createFlag(palyer,name,color)
+  __find:(palyer,type, [opts])->
+  __findExitTo:(palyer,room)->
+  __findPath:(palyer,fromPos, toPos, [opts])->
+  __getPositionAt:(palyer,x, y)->
+  __lookAt:(palyer,x, y)->
+  __lookAt:(palyer,target)->
+  __lookAtArea:(palyer,top, left, bottom, right)->
+  __lookForAt:(palyer,type, x, y)->
+  __lookForAt:(palyer,type, target)->
+  __lookForAtArea:(palyer,type, top, left, bottom, right)->
 
   _getSource:(type) ->
     switch(type)
