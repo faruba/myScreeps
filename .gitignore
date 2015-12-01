@@ -5,4 +5,5 @@ session.vim
 **/.*.swp
 **/.*~
 **/*.coffee_bak
+__test.coffee
 
