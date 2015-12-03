@@ -1,30 +1,42 @@
 Pf = require( 'pathfinding')
+{_} = require('lodash')
 
 Node = Pf.Node
 Grid = Pf.Grid
 class MyNode extends Node
   constructor:(x,y,walkable)->
     super(x,y,walkable)
-    @ref=null
+    @ref = []
     @bak = true
   bind:(ref)->
-    old = @ref
-    @ref = ref
-    if ref?
+    if _.isNull(ref)
+      old = @ref
+      @ref = []
+    else
+      if _.isNumber(ref)
+        layer = ref
+        ref = null
+      else
+        layer = ref._layer
+      old = @ref[layer]
+      @ref[layer] = ref
+      @ref.pop() if not ref? and layer is @ref.length-1
+    #console.log(@ref, '-----p')
+    if @ref.length >0
       Object.defineProperty(@, 'walkable', {
-        get : () -> @ref._walkable() ,
-        set : (val) ->@ref._setwlkable(val),
+        get : () -> @ref[@ref.length-1]._walkable() ,
+        set : (val) ->@ref[@ref.length-1]._setwlkable(val),
         enumerable : true,
         configurable : true
        })
     else
       Object.defineProperty(@, 'walkable', {
+        value:@bak
         writable:true,
         configurable: true,
         enumerable:true,
       })
-      @walkable = @bak
-      console.log('======', @walkable, @bak)
+      #@walkable = @bak
     return old
 
   _setwlkable:(@walkable) ->
@@ -63,7 +75,9 @@ class MyGrid extends Grid
     for i in [0..height-1]
       newNodes[i] = new Array(width)
       for j in [0..width-1]
-        newNodes[i][j] = new MyNode(j, i, thisNodes[i][j].walkable)
+        n = thisNodes[i][j]
+        #don't copy ref, it's more easy to rewrite walkable property
+        newNodes[i][j] = new MyNode(j, i, n.walkable)
  
     newGrid.nodes = newNodes
 

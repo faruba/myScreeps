@@ -1,13 +1,14 @@
-{Grid} = require( './util/pathfindingWarp')
+{Grid,AStarFinder} = require( './util/pathfindingWarp')
 {ConstructionSite} = require('./construction')
 {Pos} = require('./util/helper')
 {_} = require('lodash')
 #
 # postion info store in the room [x][y]:ref-object
 #
+gAStartFinder = new AStarFinder({allowDiagonal:true,dontCrossCorners:true})
 class Room
   constructor:(mapGener,@name, @_map,@owner) ->
-    @_grid = new Grid(mapGener.getMatrix())
+    @_grid = new Grid(mapGener())
     @_posRef
     @_spawns = []
     @_creeps = []
@@ -35,8 +36,18 @@ class Room
     pos.createFlag(palyer,name,color)
   __find:(palyer,type, [opts])->
   __findExitTo:(palyer,room)->
-  __findPath:(palyer,fromPos, toPos, [opts])->
+  __findPath:(palyer,fromPos, toPos
+    #TODO some opt
+    tempGrid = @_grid.clone()
+    ,{avoid,ignore}=opts)->
+      avoid.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,false))
+      ignore.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,true))
+      gAStartFinder.findPath(fromPos.x,fromPos.y, toPos.x,toPos.y,tempGrid)
+
   __getPositionAt:(palyer,x, y)->
+    if @_grid.getNodeAt(x,y)?
+      return new RoomPosition(x,y,@name)
+    return null
   __lookAt:(palyer,x, y)->
   __lookAt:(palyer,target)->
   __lookAtArea:(palyer,top, left, bottom, right)->
@@ -82,3 +93,4 @@ Room.deserializePath = (pathStr) ->
 Room.distanceP2 = (pos1, pos2) ->
   Math.pow(pos1.x-pos2.x,2) + Math.pow(pos1.y-pos2.y,2)
 
+exports.Room = Room

@@ -1,54 +1,48 @@
 {gMap} = require('../map')
 {genFlagId} = require('./helper')
+{_} = require('lodash')
 class RoomPosition
   constructor:(@x,@y,@roomName)->
     @_room = gMap._getRoom(@roomName)
 
-  createConstructionSite:(type) ->
-    return ERR_INVALID_ARGS unless @_room?
+  __createConstructionSite:(player,type) ->
     return @_room.createConstructionSite(@x,@y,type)
-  createFlag:(name =genFlagId(),color = COLOR_WHITE) ->
-    return ERR_INVALID_ARGS
+  __createFlag:(player,name =genFlagId(),color = COLOR_WHITE) ->
     return @_room.createFlag(@x,@y,name,color)
+  __findClosestByPath:(player,typeOrObject,{filter,algorithm='dijkstra'}=opt)->
+    objs = @_filterObject(typeOrObject,opt)
+    pathRet = _.map(objs, (obj) =>@_room.findPath(@,obj.position,{}))
+    min = Number.MAX_VALUE
+    for path,idx in rathRet
+      if(path[1] <=min)
+        min = path[1]
+        ret = objs[idx]
+    return ret
 
-  findClosestByPath:(type,opt={filter,algorithm})->
-    return ERR_INVALID_ARGS unless @_room?
+  __findClosestByRange:(player,type, {filter,algorithm='dijkstra'}=opt) ->
+  __findClosestByRange:(player,objects, {filter,algorithm='dijkstra'}=opt) ->
+  __findInRange:(player,type, range, {filter,algorithm='dijkstra'}=opt) ->
+  __findInRange:(player,objects, range, {filter,algorithm='dijkstra'}=opt) ->
+  __findPathTo:(player,x, y, {filter,algorithm='dijkstra'}=opt) ->
+  __findPathTo:(player,target, {filter,algorithm='dijkstra'}=opt) ->
+  __getDirectionTo:(player,x,y) ->
+  __getDirectionTo:(player,target) ->
+  __getRangeTo:(player,x,y) ->
+  __getRangeTo:(player,target) ->
+  __inRangeTo:(player,toPos, range) ->
+  __isEqualTo:(player,x,y) ->
+  __isEqualTo:(player,target) ->
+  __isNearTo:(player,x,y) ->
+  __isNearTo:(player,target) ->
+  __look:(player) ->
+  __lookFor:(player,type) ->
 
-  findClosestByPath:(objects, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  findClosestByRange:(type, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  findClosestByRange:(objects, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  findInRange:(type, range, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  findInRange:(objects, range, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  findPathTo:(x, y, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  findPathTo:(target, [opts]) ->
-    return ERR_INVALID_ARGS unless @_room?
-  getDirectionTo:(x,y) ->
-    return ERR_INVALID_ARGS unless @_room?
-  getDirectionTo:(target) ->
-    return ERR_INVALID_ARGS unless @_room?
-  getRangeTo:(x,y) ->
-    return ERR_INVALID_ARGS unless @_room?
-  getRangeTo:(target) ->
-    return ERR_INVALID_ARGS unless @_room?
-  inRangeTo:(toPos, range) ->
-    return ERR_INVALID_ARGS unless @_room?
-  isEqualTo:(x,y) ->
-    return ERR_INVALID_ARGS unless @_room?
-  isEqualTo:(target) ->
-    return ERR_INVALID_ARGS unless @_room?
-  isNearTo:(x,y) ->
-    return ERR_INVALID_ARGS unless @_room?
-  isNearTo:(target) ->
-    return ERR_INVALID_ARGS unless @_room?
-  look:() ->
-    return ERR_INVALID_ARGS unless @_room?
-  lookFor:(type) ->
-    return ERR_INVALID_ARGS unless @_room?
+  _filterObject:(typeOrObject,{filter,algorithm='dijkstra'}=opt)->
+    if _.isObject(typeOrObject)
+      objs = typeOrObject
+    else
+      objs = @_room.find(typeOrObject,filter)
+    return objs
+
 
 

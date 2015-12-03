@@ -1,17 +1,29 @@
 {_} = require('underscore')
 graff = require('graff')
+{Room} = require('./room')
 
-exports.testMapCfg = {
+testGen = () ->
+  return [
+    [1,0,0,0,0],
+    [0,1,0,0,0],
+    [0,0,0,0,0],
+    [0,0,0,1,0],
+    [0,0,0,0,1]]
+
+testMapCfg = {
   rooms:[
     {
       name:'A'
+      mapGener:testGen
       #otherCfg
     },
     {
       name:'B'
+      mapGener:testGen
     },
     {
       name:'C'
+      mapGener:testGen
     },
   ],
   edges:[
@@ -19,13 +31,14 @@ exports.testMapCfg = {
     ['A','C',13]
   ]
 }
+
 class Map
   constructor:(mapCfg)->
     @_rooms =  {}
 
     @_roomPath = new graff.Graph(_.defaults(mapCfg, {directed:false}))
     for roomCfg in mapCfg.rooms
-      @rooms[roomCfg.name] = new Room(roomCfg, roomCfg.name, @)
+      @_rooms[roomCfg.name] = new Room(roomCfg.mapGener, roomCfg.name, @)
 
     describeExits:(roomName) ->
       return @_roomPath.vertices[roomName]
@@ -34,7 +47,7 @@ class Map
       @_roomPath.get_path(from,to)[0]
 
     isRoomProtected:(roomName)->
-      @rooms[roomName]?.isProtected()
+      @_rooms[roomName]?.isProtected()
 
 
     _tick:(dt) ->
@@ -49,4 +62,4 @@ class Map
 
     _getRoom:(name) -> @_rooms[name]
 
-exports.gMap = new Map()
+exports.gMap = new Map(testMapCfg)
