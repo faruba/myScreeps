@@ -7,7 +7,7 @@ var coffeeLint = require('gulp-coffeelint');
 var cache = require('gulp-cached');
 var cover = require('gulp-coverage');
 var changed = require('gulp-changed');
-var sass = require('gulp-sass');
+//var sass = require('gulp-sass');
 //var tar = require('gulp-tar');
 //var gzip = require('gulp-gzip');
 //var s3 = require('gulp-gzip');
@@ -39,7 +39,7 @@ gulp.task('compileTest', function () {
 
 
 gulp.task('mocha', function () {
-  gulp.src([paths.tests.des+'/*.js'], { read: false })
+  return gulp.src([paths.tests.des+'/*.js'], { read: false })
     .pipe(mocha({
       reporter: 'nyan',
     }))
