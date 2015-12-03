@@ -37,18 +37,19 @@ class Room
   __find:(palyer,type, [opts])->
   __findExitTo:(palyer,room)->
   __findPath:(palyer,fromPos, toPos
-    #TODO some opt
-    tempGrid = @_grid.clone()
-    ,{avoid,ignore}=opts)->
-      avoid.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,false))
-      ignore.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,true))
-      gAStartFinder.findPath(fromPos.x,fromPos.y, toPos.x,toPos.y,tempGrid)
+    ,{avoid,ignore})->
+      #TODO some opt
+      tempGrid = @_grid.clone()
+      avoid?.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,false))
+      ignore?.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,true))
+      return gAStartFinder.findPath(fromPos.x,fromPos.y, toPos.x,toPos.y,tempGrid)
 
   __getPositionAt:(palyer,x, y)->
     if @_grid.getNodeAt(x,y)?
       return new RoomPosition(x,y,@name)
     return null
   __lookAt:(palyer,x, y)->
+    @getPositionAt(x,y).ref
   __lookAt:(palyer,target)->
   __lookAtArea:(palyer,top, left, bottom, right)->
   __lookForAt:(palyer,type, x, y)->

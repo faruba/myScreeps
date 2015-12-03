@@ -21,7 +21,6 @@ class MyNode extends Node
       old = @ref[layer]
       @ref[layer] = ref
       @ref.pop() if not ref? and layer is @ref.length-1
-    #console.log(@ref, '-----p')
     if @ref.length >0
       Object.defineProperty(@, 'walkable', {
         get : () -> @ref[@ref.length-1]._walkable() ,

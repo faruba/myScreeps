@@ -1,4 +1,4 @@
-{Container} = require('../src/room')
+{Room} = require('../src/room')
 {Data} = require('../src/util/helper')
 {eql, equal, runTestSuit} = require('../src/util/testTool')
 {Grid,Node} = require('../src/util/pathfindingWarp')
@@ -67,7 +67,47 @@ testSuitList =[
           {input: {act:'bw',x:0,y:1,value:null}, expect :[nwalk]},
         ]
       },
-      
+      {
+        it: '2 test FindPath',
+        init : () ->
+          r= new Room(
+            () ->
+              [
+                [1,0,0,0,0],
+                [1,1,1,0,0],
+                [0,0,0,0,0],
+                [0,1,1,1,1],
+                [0,0,0,0,1]
+              ]
+            ,"name",r,"ower")
+          return r
+        ,
+        do:(g, {act,x1,y1,x2,y2,value}) ->
+          ret = OK
+          switch act
+            when 'f' then ret = g.__findPath("",{x:x1,y:y1},{x:x2,y:y2},value)
+          return ret
+        ,
+        assert : eql
+        tests : [
+          {input: {act:'f',x1:1,y1:0,x2:2,y2:4,value:{}},
+          expect :[
+            [1,0],[2,0],[3,0],[3,1],[3,2],[2,2],[1,2],[0,2],
+            [0,3],[0,4],[1,4],[2,4]
+          ]},
+          {input: {act:'f',x1:1,y1:0,x2:2,y2:4,value:{avoid:[{x:3,y:1}]}},
+          expect :[
+            [1,0],[2,0],[3,0],[4,0],[4,1],[4,2],[3,2],[2,2],[1,2],[0,2],
+            [0,3],[0,4],[1,4],[2,4]
+          ]},
+          {input: {act:'f',x1:1,y1:0,x2:2,y2:4,value:{ignore:[{x:2,y:1}]}},
+          expect :[
+            [1,0],[2,0],[2,1],[2,2],[1,2],[0,2],
+            [0,3],[0,4],[1,4],[2,4]
+          ]},
+
+        ]
+      },
     ]
   },
 
