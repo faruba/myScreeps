@@ -1,8 +1,8 @@
 {Error} = require('../../util/helper')
 {Module} = require('../module')
 class Container extends Module
-  constructor: (@_store, @cfg) ->
-    super(@cfg,@_store)
+  constructor: (_store, cfg) ->
+    super(_store,cfg)
     @key='mp'
     @cap='mpMax'
 

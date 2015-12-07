@@ -84,6 +84,8 @@ POINT_EMPTY = 0
 POINT_GROND = 1
 POINT_BUILD = 2
 
+//store key
+LIFE = "life"
 
 
 

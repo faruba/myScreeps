@@ -1,30 +1,26 @@
 class Wheel extends Module
-	constructor: (speed =5, direction = Direction.North, pos = new P()) ->
-		super()
-		@speed = speed
-		@direction = direction
-		@pos = pos
+  constructor: (_store, cfg) ->
+    super(cfg,_store)
+    @key ='whCnt'
+    @dest= null
+    @plant = null
 
+  _attach:(@frame)->
+    super(@frame)
+    @_store.append(@key,1)
+
+  _detach:() ->
+    super()
+    @_store.sub(@key,1)
+
+  _doJob:(target) ->
+    if not @_isSame(target)
+      @_caculatePath(target)
+    @_doCount()
+ 
+  _caculatePath:(target)->
+   @plant = @findPathTo(target) 
 	getType : () -> return ModeType.TType_Wheel
-	slowDown: (percent) ->
-		percent = boundaries(0,100,percent)
-		@speed = Math.floor(@speed * (100 - percent) / 100)
-
-
-	getPos :() -> return @pos
-	forward: () ->
-		move = MoveMitrix[@direction].scale(@speed)
-		@pos.add(move) if @canMove(move)
-
-	backward: () ->
-		move = MoveMitrix[opposite(@direction)].scale(@speed)
-		@pos.add(move) if @canMove(move)
-
-	turnTo: (@direction) ->
-	
-	canMove: (offset) ->
-		return isValidatePos(@pos.offset(offset))
-
 
 exports.Wheel = Wheel
 

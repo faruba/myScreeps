@@ -43,6 +43,9 @@ class RoomPosition
     else
       objs = @_room.find(typeOrObject,filter)
     return objs
+  _isSame:({x,y,roomName}) ->
+    return @x is x and @y is y and @roomName is roomName
 
 
 
+exports.RoomPosition =  RoomPosition
