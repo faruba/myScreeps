@@ -27,5 +27,6 @@ class BaseFrame extends Frame
     return
 
   isMine:(owner) -> owner is @owner
+  _getFrameType:()-> ""
     
 Util.inherits(BaseFrame, Event)

@@ -43,9 +43,8 @@ class RoomPosition
     else
       objs = @_room.find(typeOrObject,filter)
     return objs
-  _isSame:({x,y,roomName}) ->
-    return @x is x and @y is y and @roomName is roomName
 
-
-
+exports.SerilaziedRoomPos = (pos) -> _.pick(pos,['x','y','roomName'])
+exports.isSamePos = (pos1,pos2) ->
+  return pos1.x is pos2.x and pos1.y is pos2.y and pos1.roomName is pos2.roomName
 exports.RoomPosition =  RoomPosition

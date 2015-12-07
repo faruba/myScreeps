@@ -2,7 +2,6 @@ class Wheel extends Module
   constructor: (_store, cfg) ->
     super(cfg,_store)
     @key ='whCnt'
-    @dest= null
     @plant = null
 
   _attach:(@frame)->
@@ -14,12 +13,13 @@ class Wheel extends Module
     @_store.sub(@key,1)
 
   _doJob:(target) ->
-    if not @_isSame(target)
+    if not @dest._isSame(target)
       @_caculatePath(target)
     @_doCount()
  
   _caculatePath:(target)->
-   @plant = @findPathTo(target) 
+    @dest = target
+    @plant = @findPathTo(target)
 	getType : () -> return ModeType.TType_Wheel
 
 exports.Wheel = Wheel

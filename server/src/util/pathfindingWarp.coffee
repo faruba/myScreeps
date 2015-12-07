@@ -41,6 +41,8 @@ class MyNode extends Node
   _setwlkable:(@walkable) ->
     @bak=@walkable
 
+  hasType:(type) -> _.findIndex(@ref,(elm)->elm._getFrameType() is type) isnt -1
+
 Pf.Node = MyNode
 
 class MyGrid extends Grid
@@ -81,8 +83,13 @@ class MyGrid extends Grid
     newGrid.nodes = newNodes
 
     return newGrid
-setWalkableAt:(x,y,walkable) ->
-  @nodes[y][x]._setwlkable(walkable)
+  setWalkableAt:(x,y,walkable) ->
+    @nodes[y][x]._setwlkable(walkable)
+
+  forEach:(func)->
+    for i in [0..@height-1]
+      for j in [0..@width-1]
+          func(nodes[i][j],j,i)
 
 
 Pf.Grid = MyGrid

@@ -37,9 +37,13 @@ class Room
   __find:(palyer,type, [opts])->
   __findExitTo:(palyer,room)->
   __findPath:(palyer,fromPos, toPos
-    ,{avoid,ignore})->
+    ,{avoid,ignore,ignoreCreeps})->
       #TODO some opt
       tempGrid = @_grid.clone()
+      if ignoreCreeps
+        tempGrid.forEach((node) ->
+          if node.hasType("creep")
+            node._setWalkable(false))
       avoid?.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,false))
       ignore?.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,true))
       return gAStartFinder.findPath(fromPos.x,fromPos.y, toPos.x,toPos.y,tempGrid)
