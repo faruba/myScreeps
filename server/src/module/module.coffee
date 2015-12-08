@@ -42,7 +42,7 @@ class Module extends Life
     else
       return Error(ERR_NOT_ENOUGH_ENERGY)
  
- _preCheck:(target) -> return true
+  _preCheck:(target) -> return true
 
 exports.Module = Module
 

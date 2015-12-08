@@ -38,6 +38,11 @@ class MyNode extends Node
       #@walkable = @bak
     return old
 
+  unbind:(ref) ->
+    layer = ref.layer
+    if ref._isFrame(@ref[layer])
+      return bind(layer)
+    return null
   _setwlkable:(@walkable) ->
     @bak=@walkable
 

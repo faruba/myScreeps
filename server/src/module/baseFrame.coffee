@@ -3,7 +3,7 @@ Event = require('events')
 Util = require('util')
 
 class BaseFrame extends Frame
-  constructor:(@owner) ->
+  constructor:(@owner,@id) ->
     @_tickStore
     @_scheduledAction
     Event.call(@)
@@ -28,5 +28,6 @@ class BaseFrame extends Frame
 
   isMine:(owner) -> owner is @owner
   _getFrameType:()-> ""
+  _isSameFrame:(frame) -> @id is frame?.id
     
 Util.inherits(BaseFrame, Event)

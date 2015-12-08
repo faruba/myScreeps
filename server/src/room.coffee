@@ -1,6 +1,6 @@
 {Grid,AStarFinder} = require( './util/pathfindingWarp')
 {ConstructionSite} = require('./construction')
-{Pos} = require('./util/helper')
+{Pos,ClassWarp} = require('./util/helper')
 {_} = require('lodash')
 #
 # postion info store in the room [x][y]:ref-object
@@ -37,7 +37,7 @@ class Room
   __find:(palyer,type, [opts])->
   __findExitTo:(palyer,room)->
   __findPath:(palyer,fromPos, toPos
-    ,{avoid,ignore,ignoreCreeps})->
+    ,{avoid:[],ignore:[],ignoreCreeps:true})->
       #TODO some opt
       tempGrid = @_grid.clone()
       if ignoreCreeps
@@ -48,13 +48,14 @@ class Room
       ignore?.forEach(({x,y}) ->tempGrid.setWalkableAt(x,y,true))
       return gAStartFinder.findPath(fromPos.x,fromPos.y, toPos.x,toPos.y,tempGrid)
 
-  __getPositionAt:(palyer,x, y)->
-    if @_grid.getNodeAt(x,y)?
-      return new RoomPosition(x,y,@name)
-    return null
-  __lookAt:(palyer,x, y)->
-    @getPositionAt(x,y).ref
-  __lookAt:(palyer,target)->
+  __getPositionAt:(palyer,x, y)-> @_grid.getNodeAt(x,y)
+  __lookAt:(palyer,targetOrX, y)->
+    if _.isObject(targetOrX)
+      x = targetOrX.x
+      y = targetOrX.y
+    else
+      x = targetOrX
+    @__getPositionAt(player,x,y)?.ref
   __lookAtArea:(palyer,top, left, bottom, right)->
   __lookForAt:(palyer,type, x, y)->
   __lookForAt:(palyer,type, target)->
@@ -84,8 +85,13 @@ class Room
       when FIND_EXIT then ret={}
     
     return ret
-  _isMine:(obj)->
-    obj.isMine(@owner)
+  _isMine:(obj)-> obj.isMine(@owner)
+  _moveTo:(obj,{x,y})->
+    to= @_grid.lookAt(x,y)
+    return UNWALKABLE unless to.walkable
+    from = @_grid.lookAt(obj)
+    if from.unbind(obj)
+      to.bind(obj)
 #_checkPos
 
 
@@ -98,4 +104,4 @@ Room.deserializePath = (pathStr) ->
 Room.distanceP2 = (pos1, pos2) ->
   Math.pow(pos1.x-pos2.x,2) + Math.pow(pos1.y-pos2.y,2)
 
-exports.Room = Room
+exports.Room = ClassWarp("P",Room)

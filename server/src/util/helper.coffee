@@ -8,17 +8,17 @@ boundaries = (min, max, value) ->
 
 exports.boundaries =  boundaries
 
-MoveMitrix = [
-	new Pos(0,1),
-	new Pos(1,1),
-	new Pos(1,0),
-	new Pos(1,-1),
-	new Pos(0,-1),
-	new Pos(-1,-1),
-	new Pos(-1,0),
-	new Pos(-1,1),
-]
-exports.MoveMitrix = MoveMitrix
+#MoveMitrix = [
+#	new Pos(0,1),
+#	new Pos(1,1),
+#	new Pos(1,0),
+#	new Pos(1,-1),
+#	new Pos(0,-1),
+#	new Pos(-1,-1),
+#	new Pos(-1,0),
+#	new Pos(-1,1),
+#]
+#exports.MoveMitrix = MoveMitrix
 
 class Data
   constructor:(initData = {}) ->
@@ -57,7 +57,7 @@ exports.Error = (err) -> {err:err}
 ['Flag','Creep','Struct','Spawn'].forEach((name) =>
   exports['gen'+name+'Id'] = () -> _.uniqueId(name))
 
-ClassWarp = (owner, clazz, cfg) ->
+ClassWarp = (owner, clazz, cfg={prefix:'__',checkLst:[]}) ->
   genFunc = (_owner, func) ->
     return () ->
       newArgs = [_owner].concat(arguments)
@@ -68,7 +68,7 @@ ClassWarp = (owner, clazz, cfg) ->
       return func.apply(@,newArgs)
 
   funcLst = _.filter(Object.keys(clazz::),
-    _.partial(_.startsWith,_,cfg.prefix))
+    (fname) -> _.startsWith(fname,cfg.prefix))
       
   for funName in funcLst
     exportName = _.trimLeft(funName,cfg.prefix)
@@ -77,4 +77,11 @@ ClassWarp = (owner, clazz, cfg) ->
   return clazz
 exports.ClassWarp = ClassWarp
 
+exports.bindProperty= (obj,name,store,prefix="") ->
+  Object.defineProperty(obj, name,{
+    enumerable:false
+    configurable:false
+    get:() -> store.get(prefix+name)
+    set:(value) -> store.set(prefix+name,value)
+  })
 

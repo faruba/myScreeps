@@ -1,8 +1,8 @@
 {gMap} = require('../map')
-{genFlagId} = require('./helper')
+{genFlagId,ClassWarp} = require('./helper')
 {_} = require('lodash')
 class RoomPosition
-  constructor:(@x,@y,@roomName)->
+  constructor:({@x,@y,@roomName,@layer})->
     @_room = gMap._getRoom(@roomName)
 
   __createConstructionSite:(player,type) ->
@@ -23,8 +23,9 @@ class RoomPosition
   __findClosestByRange:(player,objects, {filter,algorithm='dijkstra'}=opt) ->
   __findInRange:(player,type, range, {filter,algorithm='dijkstra'}=opt) ->
   __findInRange:(player,objects, range, {filter,algorithm='dijkstra'}=opt) ->
-  __findPathTo:(player,x, y, {filter,algorithm='dijkstra'}=opt) ->
-  __findPathTo:(player,target, {filter,algorithm='dijkstra'}=opt) ->
+  #__findPathTo:(player,x, y, opt) ->
+  __findPathTo:(player,target, opt) ->
+    @_room.findPath(@,target,opt)
   __getDirectionTo:(player,x,y) ->
   __getDirectionTo:(player,target) ->
   __getRangeTo:(player,x,y) ->
@@ -37,14 +38,16 @@ class RoomPosition
   __look:(player) ->
   __lookFor:(player,type) ->
 
-  _filterObject:(typeOrObject,{filter,algorithm='dijkstra'}=opt)->
+  _filterObject:(typeOrObject,{filter,algorithm='dijkstra'})->
     if _.isObject(typeOrObject)
       objs = typeOrObject
     else
       objs = @_room.find(typeOrObject,filter)
     return objs
+  _isSame:({x,y,roomName}) -> @x is x and @y is y and @roomName is roomName
+  _moveTo:(obj,pos) -> @room._moveTo(obj,pos)
 
 exports.SerilaziedRoomPos = (pos) -> _.pick(pos,['x','y','roomName'])
 exports.isSamePos = (pos1,pos2) ->
   return pos1.x is pos2.x and pos1.y is pos2.y and pos1.roomName is pos2.roomName
-exports.RoomPosition =  RoomPosition
+exports.RoomPosition =  ClassWarp("P",RoomPosition)

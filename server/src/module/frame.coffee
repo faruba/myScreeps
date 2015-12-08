@@ -1,6 +1,7 @@
-
-class Frame
-  constructor: () ->
+{RoomPosition} = require('../util/roomPos')
+class Frame extends RoomPosition
+  constructor: (pos,@cfg) ->
+    super(pos)
     @power = {}
     @slots = new Array(CONST_MAX_SLOT_NUM)
     @func ={}

@@ -40,26 +40,26 @@ class Map
     for roomCfg in mapCfg.rooms
       @_rooms[roomCfg.name] = new Room(roomCfg.mapGener, roomCfg.name, @)
 
-    describeExits:(roomName) ->
-      return @_roomPath.vertices[roomName]
+  describeExits:(roomName) ->
+    return @_roomPath.vertices[roomName]
 
-    findRoute:(from, to) ->
-      @_roomPath.get_path(from,to)[0]
+  findRoute:(from, to) ->
+    @_roomPath.get_path(from,to)[0]
 
-    isRoomProtected:(roomName)->
-      @_rooms[roomName]?.isProtected()
+  isRoomProtected:(roomName)->
+    @_rooms[roomName]?.isProtected()
 
 
-    _tick:(dt) ->
-      _.each(@_rooms,(elm, idx,list) ->
-        elm._tick(dt)
-        return list
-      ,null)
+  _tick:(dt) ->
+    _.each(@_rooms,(elm, idx,list) ->
+      elm._tick(dt)
+      return list
+    ,null)
 
-    _createMap:(name) ->
-      return ERR_NAME_EXISTS if @_rooms[name]?
-      @_rooms[name] = new Room(name)
+  _createMap:(name) ->
+    return ERR_NAME_EXISTS if @_rooms[name]?
+    @_rooms[name] = new Room(name)
 
-    _getRoom:(name) -> @_rooms[name]
+  _getRoom:(name) -> @_rooms[name]
 
 exports.gMap = new Map(testMapCfg)
