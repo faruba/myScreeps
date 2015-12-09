@@ -3,10 +3,10 @@
 class Wheel extends Module
   constructor: (_store, cfg) ->
     super(_store,cfg)
-    bindProperty(@,'whCnt', _store,'wheel')
+    bindProperty(@,'whCnt', _store,'wheel',0)
     bindProperty(@,'plant', _store,'wheel')
     bindProperty(@,'target',_store,'wheel')
-    bindProperty(@,'tick',  _store,'wheel')
+    bindProperty(@,'tick',  _store,'wheel',0)
 
   _attach:(@frame)->
     super(@frame)
@@ -22,11 +22,12 @@ class Wheel extends Module
       ret = @_caculatePath(target)
       return ret unless ret is OK
     @_doCount()
+    return OK
  
   _caculatePath:(target)->
     @target = target
     @plant = @frame.findPathTo(target)
-    @tick = 0
+    @plant.shift()
     if @plant.length <= 0
       return ERR_INVALID_TARGET
     return OK
@@ -35,12 +36,19 @@ class Wheel extends Module
     if @tick >= @cfg.progress
       step = @plant[0]
       return unless step?
-      switch @frame._moveTo(@frame,{x:step[0],y:step[1]})
+      console.log('===2', step)
+      ret = @frame._moveTo(@frame,{x:step[0],y:step[1]})
+      console.log('===3',ret)
+      switch ret
         when TEMP_UNWALKABLE then @tick -= 10
-        when UNWALKABLE then @plant = @frame.findPath(@target)
-        when OK then @tick = 0
+        when UNWALKABLE then @_caculatePath(@target)
+        when OK
+          @tick = 0
+          @plant.shift()
+      return ret
     else
       @tick += @_caculateProgress()
+      return OK
 
   _caculateProgress:() -> @cfg.proAppend
       

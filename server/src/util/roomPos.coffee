@@ -11,7 +11,7 @@ class RoomPosition
     return @_room.createFlag(@x,@y,name,color)
   __findClosestByPath:(player,typeOrObject,{filter,algorithm='dijkstra'}=opt)->
     objs = @_filterObject(typeOrObject,opt)
-    pathRet = _.map(objs, (obj) =>@_room.findPath(@,obj.position,{}))
+    pathRet = _.map(objs, (obj) =>@_room.findPath(@,obj.position))
     min = Number.MAX_VALUE
     for path,idx in rathRet
       if(path[1] <=min)
@@ -45,7 +45,7 @@ class RoomPosition
       objs = @_room.find(typeOrObject,filter)
     return objs
   _isSame:({x,y,roomName}) -> @x is x and @y is y and @roomName is roomName
-  _moveTo:(obj,pos) -> @room._moveTo(obj,pos)
+  _moveTo:(obj,pos) -> @_room._moveTo(obj,pos)
 
 exports.SerilaziedRoomPos = (pos) -> _.pick(pos,['x','y','roomName'])
 exports.isSamePos = (pos1,pos2) ->

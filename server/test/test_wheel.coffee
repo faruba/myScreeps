@@ -4,6 +4,7 @@
 {RoomPosition} = require('../src/util/roomPos')
 {eql, equal, runTestSuit} = require('../src/util/testTool')
 {_} = require('lodash')
+{spy} = require('sinon')
 
 class W
   constructor:(@w,@_layer)->
@@ -14,7 +15,22 @@ nwalk = new W(false,0)
 walkL2 = new W(true,1)
 walkL3 = new W(true,2)
 nwalkL2 = new W(false,1)
-gdata = null
+
+class FakeFrame extends RoomPosition
+  constructor:(cfg)->
+    super(cfg)
+  _isSameFrame:(ref) ->return @ is ref
+pos1 = new FakeFrame({x:2,y:2,roomName:"test",layer:1})
+d = new Data()
+w = new Wheel(d,{progress:100,proAppend:10})
+fcheck = null
+before(() ->
+  fcheck = spy(w,'_caculatePath')
+)
+after(()->
+  fcheck.restore()
+)
+
 testSuitList =[
   {
     describe: 'Room',
@@ -32,31 +48,51 @@ testSuitList =[
                 [0,0,0,0,1]
               ]
             ,"name",r,"ower")
-          d = new Data()
-          frame = new RoomPosition({x:1,y:0,roomName:"test",layer:1})
-          #print(_.functions(frame))
+          frame = new  FakeFrame({x:1,y:0,roomName:"test",layer:1})
+          r.getPositionAt(1,0).bind(frame)
           frame._room = r
-          w = new Wheel(d,{progress:100,proAppend:10})
           w._attach(frame)
           return w
         ,
-        do:(w, {act,x1,y1,times}) ->
+        do:(w, {act,pos,times}) ->
           ret = OK
+          console.log('-----begin')
           switch act
             when 'g'
               for i in [1..times]
-                console.log("===run ",i)
-                ret = w._doJob({x:x1,y:y1,roomName:"test"})
+                ret = w._doJob(pos)
+            when 'ct' then return fcheck.callCount
           #print(w)
-          return {ret:ret,t:w.tick,tar:w.target,p:w.plant}
+          return {ret:ret,t:w.tick,tar:w.target,p:w.plant,c:[w.frame.x,w.frame.y]}
         ,
         assert : eql
         tests : [
-          {input: {act:'g',x1:2,y1:2,times:1},
+          # set target
+          {input: {act:'g',pos:pos1,times:1},
           expect :{
-            p:[[1,0],[2,0],[3,0],[3,1],[3,2],[2,2]],
-            t:10,tar:{x:2,y:2},ret:OK
+            p:[[2,0],[3,0],[3,1],[3,2],[2,2]],
+            t:10,tar:pos1,ret:OK,c:[1,0]
           }},
+          # tick 
+          {input: {act:'g',pos:pos1,times:8},
+          expect :{
+            p:[[2,0],[3,0],[3,1],[3,2],[2,2]],
+            t:90,tar:pos1,ret:OK,c:[1,0]
+          }},
+          #tick
+          {input: {act:'g',pos:pos1,times:1},
+          expect :{
+            p:[[2,0],[3,0],[3,1],[3,2],[2,2]],
+            t:100,tar:pos1,ret:OK,c:[1,0]
+          }},
+          #move
+          {input: {act:'g',pos:pos1,times:1},
+          expect :{
+            p:[[3,0],[3,1],[3,2],[2,2]],
+            t:0,tar:pos1,ret:OK,c:[2,0]
+          }},
+          ## call count
+          {input: {act:'ct'}, expect :1},
         ]
       },
     ]

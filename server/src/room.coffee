@@ -37,7 +37,7 @@ class Room
   __find:(palyer,type, [opts])->
   __findExitTo:(palyer,room)->
   __findPath:(palyer,fromPos, toPos
-    ,{avoid:[],ignore:[],ignoreCreeps:true})->
+    ,{avoid=[],ignore=[],ignoreCreeps=true}={})->
       #TODO some opt
       tempGrid = @_grid.clone()
       if ignoreCreeps
@@ -49,7 +49,7 @@ class Room
       return gAStartFinder.findPath(fromPos.x,fromPos.y, toPos.x,toPos.y,tempGrid)
 
   __getPositionAt:(palyer,x, y)-> @_grid.getNodeAt(x,y)
-  __lookAt:(palyer,targetOrX, y)->
+  __lookAt:(player,targetOrX, y)->
     if _.isObject(targetOrX)
       x = targetOrX.x
       y = targetOrX.y
@@ -87,9 +87,9 @@ class Room
     return ret
   _isMine:(obj)-> obj.isMine(@owner)
   _moveTo:(obj,{x,y})->
-    to= @_grid.lookAt(x,y)
+    to= @getPositionAt(x,y)
     return UNWALKABLE unless to.walkable
-    from = @_grid.lookAt(obj)
+    from = @getPositionAt(obj.x,obj.y)
     if from.unbind(obj)
       to.bind(obj)
 #_checkPos
