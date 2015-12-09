@@ -62,10 +62,10 @@ ClassWarp = (owner, clazz, cfg={prefix:'__',checkLst:[]}) ->
     return () ->
       newArgs = [_owner].concat(arguments)
       for check in cfg.checkLst
-        ret = check.apply(@,newArgs)
+        ret = _.partial(check,_owner).apply(@,arguments)
         if ret isnt OK
           return ret
-      return func.apply(@,newArgs)
+      return _.partial(func,_owner).apply(@,arguments)
 
   funcLst = _.filter(Object.keys(clazz::),
     (fname) -> _.startsWith(fname,cfg.prefix))
@@ -77,11 +77,11 @@ ClassWarp = (owner, clazz, cfg={prefix:'__',checkLst:[]}) ->
   return clazz
 exports.ClassWarp = ClassWarp
 
-exports.bindProperty= (obj,name,store,prefix="") ->
+exports.bindProperty= (obj,name,store,prefix="", defV) ->
   Object.defineProperty(obj, name,{
     enumerable:false
     configurable:false
     get:() -> store.get(prefix+name)
     set:(value) -> store.set(prefix+name,value)
   })
-
+  obj[name] = defV
