@@ -40,7 +40,7 @@ class MyNode extends Node
 
   unbind:(ref) ->
     layer = ref.layer
-    if ref._isFrame(@ref[layer])
+    if ref._isSameFrame(@ref[layer])
       return bind(layer)
     return null
   _setwlkable:(@walkable) ->
@@ -76,7 +76,7 @@ class MyGrid extends Grid
     width = this.width
     height = this.height
     thisNodes = this.nodes
-    newGrid = new Grid(width, height)
+    newGrid = new MyGrid(width, height)
     newNodes = new Array(height)
     for i in [0..height-1]
       newNodes[i] = new Array(width)
@@ -94,7 +94,7 @@ class MyGrid extends Grid
   forEach:(func)->
     for i in [0..@height-1]
       for j in [0..@width-1]
-          func(nodes[i][j],j,i)
+          func(@nodes[i][j],j,i)
 
 
 Pf.Grid = MyGrid
