@@ -88,6 +88,9 @@ POINT_BUILD = 2
 LIFE = "life"
 
 
+//PATH
+UNWALKABLE  = -200
+TEMP_UNWALKABLE  = -201
 
 
 var util = require('util');
