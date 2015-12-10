@@ -92,7 +92,8 @@ LIFE = "life"
 UNWALKABLE  = -200
 TEMP_UNWALKABLE  = -201
 
-
+// system fault
+UNKNOW = -300
 var util = require('util');
 showMeTheStack = function () {try {a = b;} catch (err) {console.log(err.stack);}};
 print = function(log){ console.log(util.inspect(log,{depth:11}));}
