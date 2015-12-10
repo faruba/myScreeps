@@ -36,9 +36,7 @@ class Wheel extends Module
     if @tick >= @cfg.progress
       step = @plant[0]
       return unless step?
-      console.log('===2', step)
-      ret = @frame._moveTo(@frame,{x:step[0],y:step[1]})
-      console.log('===3',ret)
+      ret = @frame._moveTo({x:step[0],y:step[1]})
       switch ret
         when TEMP_UNWALKABLE then @tick -= 10
         when UNWALKABLE then @_caculatePath(@target)

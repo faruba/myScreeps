@@ -92,6 +92,8 @@ class Room
     from = @getPositionAt(obj.x,obj.y)
     if from.unbind(obj)
       to.bind(obj)
+      return OK
+    return UNKNOW
 #_checkPos
 
 

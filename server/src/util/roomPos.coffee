@@ -2,7 +2,7 @@
 {genFlagId,ClassWarp} = require('./helper')
 {_} = require('lodash')
 class RoomPosition
-  constructor:({@x,@y,@roomName,@layer})->
+  constructor:({@x,@y,@roomName,@_layer})->
     @_room = gMap._getRoom(@roomName)
 
   __createConstructionSite:(player,type) ->
@@ -45,7 +45,17 @@ class RoomPosition
       objs = @_room.find(typeOrObject,filter)
     return objs
   _isSame:({x,y,roomName}) -> @x is x and @y is y and @roomName is roomName
-  _moveTo:(obj,pos) -> @_room._moveTo(obj,pos)
+  _moveTo:(pos) ->
+    ret = @_room._moveTo(@,pos)
+    if ret is OK
+      @x = pos.x
+      @y = pos.y
+      if (pos.roomName? and pos.roomName isnt @roomName)
+        @roomName = pos.roomName
+        @_room = gMap._getRoom(@roomName)
+
+    return ret
+  _walkable:() -> false
 
 exports.SerilaziedRoomPos = (pos) -> _.pick(pos,['x','y','roomName'])
 exports.isSamePos = (pos1,pos2) ->
