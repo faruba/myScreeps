@@ -21,6 +21,7 @@ class MyNode extends Node
       old = @ref[layer]
       @ref[layer] = ref
       @ref.pop() if not ref? and layer is @ref.length-1
+      @ref = _.dropRightWhile(@ref,(elm) -> not elm?)
     if @ref.length >0
       Object.defineProperty(@, 'walkable', {
         get : () -> @ref[@ref.length-1]._walkable() ,
@@ -39,9 +40,9 @@ class MyNode extends Node
     return old
 
   unbind:(ref) ->
-    layer = ref.layer
+    layer = ref._layer
     if ref._isSameFrame(@ref[layer])
-      return bind(layer)
+      return @bind(layer)
     return null
   _setwlkable:(@walkable) ->
     @bak=@walkable
