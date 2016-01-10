@@ -1,7 +1,8 @@
 {Grid,AStarFinder} = require( './util/pathfindingWarp')
 {ConstructionSite} = require('./construction')
-{Pos,ClassWarp} = require('./util/helper')
+{myGc,Pos,ClassWarp} = require('./util/helper')
 {_} = require('lodash')
+weak = require('weak')
 #
 # postion info store in the room [x][y]:ref-object
 #
@@ -10,17 +11,20 @@ class Room
   constructor:(mapGener,@name, @_map,@owner) ->
     @_grid = new Grid(mapGener())
     @_posRef
-    @_spawns = []
-    @_creeps = []
-    @_structures = []
-
-    @storage = []
+    @_objs ={
+      spawns : {}
+      creeps : {}
+      structures : {}
+      storage : {}
+    }
     @memory = {}
     @_genIDVal = null
-
-  createConstructionSite: (x,y,structType) ->
-
-
+    @_refs ={
+      spawns : {}
+      creeps : {}
+      structures : {}
+      storage : {}
+    }
   _getID:() ->
     ret = if @_genIDVal then @_genIDVal else @_randoomID()
     @_genIDVal = null
@@ -34,6 +38,8 @@ class Room
   __createFlag:(palyer,x, y, name=genFlagId(), color=COLOR_WHITE)->
   __createFlag:(palyer,pos, name=genFlagId(), color=COLOR_WHITE)->
     pos.createFlag(palyer,name,color)
+
+  _createFrame
   __find:(palyer,type, [opts])->
   __findExitTo:(palyer,room)->
   __findPath:(palyer,fromPos, toPos
@@ -63,10 +69,10 @@ class Room
 
   _getSource:(type) ->
     switch(type)
-      when FIND_CREEPS then ret=@_creeps
-      when FIND_MY_CREEPS then ret=_.filter(@_creeps,@_isMine)
-      when FIND_HOSTILE_CREEPS then ret=_.filter(@_creeps,_.negate(@_isMine))
-      when FIND_MY_SPAWNS then ret=@_spawns
+      when FIND_CREEPS then ret=@_refs.creeps
+      when FIND_MY_CREEPS then ret=_.filter(@_refs.creeps,@_isMine)
+      when FIND_HOSTILE_CREEPS then ret=_.filter(@_refs.creeps,_.negate(@_isMine))
+      when FIND_MY_SPAWNS then ret=@_refs.spawns
       when FIND_HOSTILE_SPAWNS then ret={}
       when FIND_SOURCES then ret={}
       when FIND_SOURCES_ACTIVE then ret={}
@@ -86,14 +92,50 @@ class Room
     
     return ret
   _isMine:(obj)-> obj.isMine(@owner)
+
   _moveTo:(obj,{x,y})->
     to= @getPositionAt(x,y)
     return UNWALKABLE unless to.walkable
-    from = @getPositionAt(obj.x,obj.y)
-    if from.unbind(obj)
-      to.bind(obj)
+    if @_leave(obj)
+      @_enter(obj,x,y)
       return OK
     return UNKNOW
+
+  _leave:(obj)->
+    from = @getPositionAt(obj.x,obj.y)
+    from.unbind(obj)
+
+  _enter:(obj, x,y)->
+    to= @getPositionAt(x,y)
+    return UNWALKABLE unless to.walkable
+    to.bind(obj)
+
+  _onBirth:(obj) ->
+    {_obj,_ref} = @_getStorageByType(obj._getFrameType())
+    return UNKNOW if (not _obj?) or _obj[obj.id]?
+    _obj[obj.id] = obj
+    _ref[obj.id] = weak(obj)
+    return _ref[obj.id]
+
+  _onDeath:(obj) ->
+    {_obj,_ref} = @_getStorageByType(obj._getFrameType())
+    id = obj.id
+    _ref[id] = null
+    _obj[id] = null
+    myGc()
+    
+  _getStorageByType:(type) ->
+    switch type
+      when STRUCTURE_SPAWN then where = 'spawns'
+      when STRUCTURE_EXTENSION,  STRUCTURE_RAMPART, \
+        STRUCTURE_ROAD, STRUCTURE_LINK, STRUCTURE_WALL, \
+        STRUCTURE_KEEPER_LAIR, STRUCTURE_CONTROLLER then where = 'structures'
+      when STRUCTURE_STORAGE then where = 'storage'
+      when FRAME_TYPE_SCREEP then where = 'creeps'
+      else where = ''
+    return {_obj:@_objs[where], _ref:@_refs[where]}
+
+
 #_checkPos
 
 

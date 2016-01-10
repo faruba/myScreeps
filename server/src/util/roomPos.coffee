@@ -1,6 +1,13 @@
 {gMap} = require('../map')
 {genFlagId,ClassWarp} = require('./helper')
 {_} = require('lodash')
+
+isSamePos = (pos1,pos2) ->
+  return pos1.x is pos2.x \
+    and pos1.y is pos2.y \
+    and pos1.roomName is pos2.roomName \
+    and pos1._layer is pos2._layer
+
 class RoomPosition
   constructor:({@x,@y,@roomName,@_layer})->
     @_room = gMap._getRoom(@roomName)
@@ -44,7 +51,7 @@ class RoomPosition
     else
       objs = @_room.find(typeOrObject,filter)
     return objs
-  _isSame:({x,y,roomName}) -> @x is x and @y is y and @roomName is roomName
+  _isSame:(pos) -> isSamePos(@, pos)
   _moveTo:(pos) ->
     ret = @_room._moveTo(@,pos)
     if ret is OK
@@ -57,7 +64,6 @@ class RoomPosition
     return ret
   _walkable:() -> false
 
-exports.SerilaziedRoomPos = (pos) -> _.pick(pos,['x','y','roomName'])
-exports.isSamePos = (pos1,pos2) ->
-  return pos1.x is pos2.x and pos1.y is pos2.y and pos1.roomName is pos2.roomName
+exports.SerilaziedRoomPos = (pos) -> _.pick(pos,['x','y','roomName','_layer'])
+exports.isSamePos = isSamePos
 exports.RoomPosition =  ClassWarp("P",RoomPosition)

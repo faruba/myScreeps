@@ -64,6 +64,8 @@ STRUCTURE_WALL =  "constructedWall"
 STRUCTURE_KEEPER_LAIR =   "keeperLair"
 STRUCTURE_CONTROLLER =    "controller"
 STRUCTURE_STORAGE =   "storage"
+FRAME_TYPE_SCREEP = "screep"
+
 //Colors
 COLOR_RED =   "red"
 COLOR_PURPLE =    "purple"

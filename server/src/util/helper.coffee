@@ -85,3 +85,9 @@ exports.bindProperty= (obj,name,store,prefix="", defV) ->
     set:(value) -> store.set(prefix+name,value)
   })
   obj[name] = defV
+exports.myGc=() ->
+  if(global.gc?)
+    global.gc()
+  else
+    error("""Garbage collection unavailable.  Pass --expose-gc 
+          when launching node to enable forced garbage collection.""")

@@ -3,7 +3,7 @@ Event = require('events')
 Util = require('util')
 
 class BaseFrame extends Frame
-  constructor:(@owner,@id) ->
+  constructor:(@owner,@id,@cfg) ->
     @_tickStore
     @_scheduledAction
     Event.call(@)
@@ -24,7 +24,7 @@ class BaseFrame extends Frame
   _onDamage:(damageValue) ->
     activeModule = _.find(@slots, (module) -> module._isAlive())
     return ERR_NO_BODYPART unless activeModule?
-    return
+    return activeModule._onDamage(damageValue)
 
   isMine:(owner) -> owner is @owner
   _getFrameType:()-> ""

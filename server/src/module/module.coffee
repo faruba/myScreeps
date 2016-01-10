@@ -52,13 +52,17 @@ class ModeFactory
     @modeCfg={}
   registeMode:(cfg) ->
     @modeCfg[cfg.type] = cfg
-  createMode:(type, count, creator) ->
+  getCost:(typeLst) ->
+    ret =0
+    for type in typeLst
+      cfg = @modeCfg[type]
+      return null unless cfg?
+      ret += cfg.cost
+    return ret
+
+  createMode:(type,  creator) ->
     cfg = @modeCfg[type]
     return null unless cfg?
-    if creator.isHaveEngery(cfg.cost(count))
-      return cfg.create(creator)
-    else
-      return null
-    
+    return new cfg.create(creator,cfg.cfg)
 
-
+exports.ModeFactory = ModeFactory
